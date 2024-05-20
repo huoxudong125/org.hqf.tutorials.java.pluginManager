@@ -6,7 +6,7 @@ public class ResourceIntensiveProcessingPlugin implements Plugin {
 
     private static final int PROCESSING_ITERATIONS = 100;
 
-
+    private volatile boolean isStopping = false;
 
     @Override
     public void start() {
@@ -37,6 +37,12 @@ public class ResourceIntensiveProcessingPlugin implements Plugin {
 
     @Override
     public void stop() {
+        isStopping = true;
         // No specific actions needed for this plugin since it doesn't hold resources
+    }
+
+    @Override
+    public boolean isStopping() {
+        return false;
     }
 }
