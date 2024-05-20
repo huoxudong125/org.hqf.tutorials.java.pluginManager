@@ -4,7 +4,7 @@ import org.hqf.tutorials.java.plugin.manager.Plugin;
 
 public class ResourceIntensiveProcessingPlugin implements Plugin {
 
-    private static final int PROCESSING_ITERATIONS = 100000;
+    private static final int PROCESSING_ITERATIONS = 100;
 
     @Override
     public void start() {
