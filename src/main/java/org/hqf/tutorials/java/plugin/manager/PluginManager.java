@@ -54,5 +54,30 @@ public class PluginManager {
     // - Monitoring plugin resource usage (CPU, memory, etc.)
     // - Implementing resource limits and taking actions based on resource usage (e.g., logging warnings, restarting plugins)
 
+    public void startPlugin(String pluginId) {
+        Plugin plugin = pluginMap.get(pluginId);
+        if (plugin != null) {
+            if (!pluginResourceUsageMap.containsKey(pluginId)) {
+                PluginResourceUsage pluginResourceUsage = new PluginResourceUsage(pluginId, plugin);
+                pluginResourceUsageMap.put(pluginId, pluginResourceUsage);
 
+                System.out.println("Plugin started: " + pluginId);
+            } else {
+                System.out.println("Plugin is already running: " + pluginId);
+            }
+        } else {
+            System.out.println("Plugin not found: " + pluginId);
+        }
+    }
+
+    public void stopPlugin(String pluginId) {
+        Plugin plugin = pluginMap.get(pluginId);
+        if (plugin != null) {
+            plugin.stop();
+            pluginMap.remove(pluginId); // Optionally, remove from map
+            System.out.println("Plugin stopped: " + pluginId);
+        } else {
+            System.out.println("Plugin not found: " + pluginId);
+        }
+    }
 }
