@@ -6,6 +6,8 @@ public class ResourceIntensiveProcessingPlugin implements Plugin {
 
     private static final int PROCESSING_ITERATIONS = 100;
 
+
+
     @Override
     public void start() {
         for (int i = 0; i < PROCESSING_ITERATIONS; i++) {
@@ -31,5 +33,10 @@ public class ResourceIntensiveProcessingPlugin implements Plugin {
     public int getThreadCount() {
         // Implement logic to count the number of threads used by the plugin
         return Thread.activeCount();
+    }
+
+    @Override
+    public void stop() {
+        // No specific actions needed for this plugin since it doesn't hold resources
     }
 }

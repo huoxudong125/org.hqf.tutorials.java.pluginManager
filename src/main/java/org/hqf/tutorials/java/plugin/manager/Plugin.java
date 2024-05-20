@@ -8,4 +8,8 @@ public interface Plugin {
     int getThreadCount();
 
     // Optional: Implement methods for resource cleanup or termination if needed
+
+    void stop();
+
+    boolean isStopping();
 }

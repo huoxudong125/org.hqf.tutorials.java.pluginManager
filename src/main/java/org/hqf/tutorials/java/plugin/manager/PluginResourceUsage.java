@@ -4,7 +4,7 @@ class PluginResourceUsage {
     private final String pluginId;
     private final Plugin plugin;
     private final long pluginStartTime;
-    private final long pluginThreadId;
+    private final Thread pluginThread;
 
     public PluginResourceUsage(String pluginId, Plugin plugin) {
         this.pluginId = pluginId;
@@ -30,7 +30,7 @@ class PluginResourceUsage {
             }
         });
 
-        this.pluginThreadId = pluginThread.getId();
+        this.pluginThread = pluginThread;
         // Start the sandboxed thread
         pluginThread.start();
     }
@@ -47,7 +47,11 @@ class PluginResourceUsage {
         return pluginStartTime;
     }
 
+    public Thread getPluginThread() {
+        return pluginThread;
+    }
+
     public long getPluginThreadId() {
-        return pluginThreadId;
+        return pluginThread.getId();
     }
 }

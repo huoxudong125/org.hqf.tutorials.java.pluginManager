@@ -9,10 +9,14 @@ public class LoggingPlugin implements Plugin {
 
     private static final long LOG_INTERVAL_MS = 1000; // Log every second
 
+    private Timer timerTask = new Timer();
+
+    private volatile boolean isStopping = false;
+
     @Override
     public void start() {
-        Timer timer = new Timer();
-        timer.scheduleAtFixedRate(new TimerTask() {
+
+        timerTask.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
                 System.out.println("LoggingPlugin: Logging message at " + System.currentTimeMillis());
@@ -31,4 +35,22 @@ public class LoggingPlugin implements Plugin {
         // Implement logic to count the number of threads used by the plugin
         return Thread.activeCount();
     }
+
+    @Override
+    public boolean isStopping() {
+        return isStopping;
+    }
+
+    @Override
+    public void stop() {
+        isStopping = true;
+        // Stop the timer task used for logging
+        if (timerTask != null) {
+            timerTask.cancel();
+            timerTask = null;
+        }
+        // Perform any additional cleanup specific to the plugin
+        // (e.g., closing files, releasing resources)
+    }
+
 }

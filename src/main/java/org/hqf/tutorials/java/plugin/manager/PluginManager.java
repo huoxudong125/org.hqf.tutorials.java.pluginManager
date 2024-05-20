@@ -8,6 +8,7 @@ public class PluginManager {
 
     private final Map<String, Plugin> pluginMap = new HashMap<>();
 
+    private final Map<String, PluginResourceUsage> pluginResourceUsageMap = new HashMap<>();
 
     public void loadPlugins() {
         ServiceLoader<Plugin> loader = ServiceLoader.load(Plugin.class);
@@ -22,7 +23,17 @@ public class PluginManager {
 
         pluginMap.entrySet().forEach(entry -> {
             PluginResourceUsage pluginResourceUsage = new PluginResourceUsage(entry.getKey(), entry.getValue());
+            pluginResourceUsageMap.put(entry.getKey(), pluginResourceUsage);
         });
+    }
+
+    public void stopPlugins() {
+        for (PluginResourceUsage pluginResourceUsage : pluginResourceUsageMap.values()) {
+            pluginResourceUsage.getPlugin().isStopping(); // Set the flag before stopping the thread
+            pluginResourceUsageMap.get(pluginResourceUsage.getPluginId()).getPluginThread().interrupt();
+        }
+        pluginMap.clear();
+        System.out.println("PluginManager: Plugins stopped.");
     }
 
     public void getPluginInfo(String pluginId) {
@@ -36,9 +47,12 @@ public class PluginManager {
         }
     }
 
+
     // (Optional) Implement methods for:
     // - Stopping plugins
     // - Unloading plugins
     // - Monitoring plugin resource usage (CPU, memory, etc.)
     // - Implementing resource limits and taking actions based on resource usage (e.g., logging warnings, restarting plugins)
+
+
 }
