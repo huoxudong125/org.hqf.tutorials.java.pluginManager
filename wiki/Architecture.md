@@ -12,35 +12,125 @@
 
 ```mermaid
 flowchart LR
-    A[plugin-demo\nMain] --> B[PluginManager]
-<<<<<<< codex/add-design-diagrams-using-mermaid-3fkjjc
+    A["plugin-demo\\nMain"] --> B["PluginManager"]
     B --> C["ServiceLoader<Plugin>"]
-    C --> D["plugins\nLoggingPlugin / ResourceIntensiveProcessingPlugin"]
+    C --> D["plugins\\nLoggingPlugin / ResourceIntensiveProcessingPlugin"]
 
-    B --> E[PluginResourceUsage]
-    E --> F[PluginThreadFactory]
+    B --> E["PluginResourceUsage"]
+    E --> F["PluginThreadFactory"]
     F --> G["PluginThread-{pluginId}"]
     G --> H["plugin.start()"]
 
-    B -. 手动注册 .-> I[PluginResourceManager]
+    B -. "手动注册" .-> I["PluginResourceManager"]
     I --> J["CPU/Memory/Thread 监控告警"]
 
-    K["plugin-api\nPlugin 接口"] -. 统一协议 .-> C
-=======
-    B --> C[ServiceLoader<Plugin>]
-    C --> D[plugins\nLoggingPlugin / ResourceIntensiveProcessingPlugin]
+    K["plugin-api\\nPlugin 接口"] -. "统一协议" .-> C
+    K -. "统一协议" .-> D
+```
 
-    B --> E[PluginResourceUsage]
-    E --> F[PluginThreadFactory]
-    F --> G[PluginThread-{pluginId}]
-    G --> H[plugin.start()]
+## 时序图（Mermaid）
 
-    B -. 手动注册 .-> I[PluginResourceManager]
-    I --> J[CPU/Memory/Thread 监控告警]
+```mermaid
+sequenceDiagram
+    autonumber
+    participant Main as plugin-demo.Main
+    participant PM as PluginManager
+    participant SL as ServiceLoader<Plugin>
+    participant PRU as PluginResourceUsage
+    participant PTF as PluginThreadFactory
+    participant Plugin as Plugin Impl
 
-    K[plugin-api\nPlugin 接口] -. 统一协议 .-> C
->>>>>>> master
-    K -. 统一协议 .-> D
+    Main->>PM: loadPlugins()
+    PM->>SL: load(Plugin.class)
+    SL-->>PM: plugin 实例集合
+
+    Main->>PM: startPlugins()
+    loop 遍历每个插件
+        PM->>PRU: new(pluginId, plugin)
+        PM->>PRU: startPlugin()
+        PRU->>PTF: newThread(runnable)
+        PTF-->>PRU: PluginThread-{pluginId}
+        PRU->>Plugin: start() (在线程中)
+        Plugin-->>PRU: 运行中
+    end
+```
+
+## 类图（Mermaid）
+
+```mermaid
+classDiagram
+    direction LR
+
+    class Plugin {
+      <<interface>>
+      +start() void
+      +stop() void
+      +isStopping() boolean
+      +getMemoryUsage() long
+      +getThreadCount() int
+    }
+
+    class PluginManager {
+      -Map~String, Plugin~ pluginMap
+      -Map~String, PluginResourceUsage~ pluginResourceUsageMap
+      +loadPlugins() void
+      +startPlugins() void
+      +stopPlugins() void
+    }
+
+    class PluginResourceUsage {
+      -String pluginId
+      -Plugin plugin
+      -Thread thread
+      -long startTime
+      +startPlugin() void
+      +stopPlugin() void
+    }
+
+    class PluginThreadFactory {
+      +newThread(Runnable) Thread
+    }
+
+    class PluginResourceManager {
+      -Map~String, Plugin~ pluginMap
+      +registerPlugin(String, Plugin) void
+      +monitorResourceUsage() void
+    }
+
+    class LoggingPlugin
+    class ResourceIntensiveProcessingPlugin
+
+    Plugin <|.. LoggingPlugin
+    Plugin <|.. ResourceIntensiveProcessingPlugin
+    PluginManager --> Plugin : 通过 SPI 加载
+    PluginManager --> PluginResourceUsage : 管理运行状态
+    PluginResourceUsage --> PluginThreadFactory : 创建线程
+    PluginResourceUsage --> Plugin : 调用 start/stop
+    PluginResourceManager --> Plugin : 手动注册与监控
+```
+
+## 部署图（Mermaid）
+
+```mermaid
+flowchart TB
+    subgraph App[Java 应用进程]
+        Main[plugin-demo Main]
+        Core[plugin-core]
+        API[plugin-api]
+    end
+
+    subgraph PluginJar1[logging-plugin.jar]
+        LP[LoggingPlugin]
+    end
+
+    subgraph PluginJar2[resource-intensive-plugin.jar]
+        RP[ResourceIntensiveProcessingPlugin]
+    end
+
+    Main --> Core
+    Core --> API
+    Core -->|SPI 发现| LP
+    Core -->|SPI 发现| RP
 ```
 
 ## 分层说明
