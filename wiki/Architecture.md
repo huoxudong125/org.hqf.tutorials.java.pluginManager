@@ -13,6 +13,20 @@
 ```mermaid
 flowchart LR
     A[plugin-demo\nMain] --> B[PluginManager]
+<<<<<<< codex/add-design-diagrams-using-mermaid-3fkjjc
+    B --> C["ServiceLoader<Plugin>"]
+    C --> D["plugins\nLoggingPlugin / ResourceIntensiveProcessingPlugin"]
+
+    B --> E[PluginResourceUsage]
+    E --> F[PluginThreadFactory]
+    F --> G["PluginThread-{pluginId}"]
+    G --> H["plugin.start()"]
+
+    B -. 手动注册 .-> I[PluginResourceManager]
+    I --> J["CPU/Memory/Thread 监控告警"]
+
+    K["plugin-api\nPlugin 接口"] -. 统一协议 .-> C
+=======
     B --> C[ServiceLoader<Plugin>]
     C --> D[plugins\nLoggingPlugin / ResourceIntensiveProcessingPlugin]
 
@@ -25,6 +39,7 @@ flowchart LR
     I --> J[CPU/Memory/Thread 监控告警]
 
     K[plugin-api\nPlugin 接口] -. 统一协议 .-> C
+>>>>>>> master
     K -. 统一协议 .-> D
 ```
 
