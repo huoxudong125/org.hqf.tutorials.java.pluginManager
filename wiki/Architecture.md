@@ -13,8 +13,8 @@
 ```mermaid
 flowchart LR
     A[plugin-demo\nMain] --> B[PluginManager]
-    B --> C[ServiceLoader<Plugin>]
-    C --> D[plugins\nLoggingPlugin / ResourceIntensiveProcessingPlugin]
+    B --> C["ServiceLoader<Plugin>"]
+    C --> D["plugins\nLoggingPlugin / ResourceIntensiveProcessingPlugin"]
 
     B --> E[PluginResourceUsage]
     E --> F[PluginThreadFactory]
@@ -22,9 +22,9 @@ flowchart LR
     G --> H["plugin.start()"]
 
     B -. 手动注册 .-> I[PluginResourceManager]
-    I --> J[CPU/Memory/Thread 监控告警]
+    I --> J["CPU/Memory/Thread 监控告警"]
 
-    K[plugin-api\nPlugin 接口] -. 统一协议 .-> C
+    K["plugin-api\nPlugin 接口"] -. 统一协议 .-> C
     K -. 统一协议 .-> D
 ```
 
