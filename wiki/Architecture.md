@@ -8,6 +8,26 @@
 4. `PluginResourceUsage` 通过 `PluginThreadFactory` 创建独立线程并执行 `plugin.start()`。
 5. `PluginResourceManager`（手动注册模式）可周期性检查资源使用并输出告警。
 
+## 设计图（Mermaid）
+
+```mermaid
+flowchart LR
+    A[plugin-demo\nMain] --> B[PluginManager]
+    B --> C[ServiceLoader<Plugin>]
+    C --> D[plugins\nLoggingPlugin / ResourceIntensiveProcessingPlugin]
+
+    B --> E[PluginResourceUsage]
+    E --> F[PluginThreadFactory]
+    F --> G[PluginThread-{pluginId}]
+    G --> H[plugin.start()]
+
+    B -. 手动注册 .-> I[PluginResourceManager]
+    I --> J[CPU/Memory/Thread 监控告警]
+
+    K[plugin-api\nPlugin 接口] -. 统一协议 .-> C
+    K -. 统一协议 .-> D
+```
+
 ## 分层说明
 
 ### 1) plugin-api
