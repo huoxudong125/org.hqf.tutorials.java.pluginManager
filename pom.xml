@@ -14,6 +14,10 @@
         <module>plugin-core</module>
         <module>plugins/logging-plugin</module>
         <module>plugins/resource-intensive-plugin</module>
+        <module>plugins/sales-plugin</module>
+        <module>plugins/inventory-plugin</module>
+        <module>plugins/warehouse-plugin</module>
+        <module>plugins/procurement-plugin</module>
     </modules>
 
     <properties>
@@ -41,6 +45,26 @@
             <dependency>
                 <groupId>org.hqf.tutorials.java.plugin</groupId>
                 <artifactId>resource-intensive-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hqf.tutorials.java.plugin</groupId>
+                <artifactId>procurement-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hqf.tutorials.java.plugin</groupId>
+                <artifactId>sales-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hqf.tutorials.java.plugin</groupId>
+                <artifactId>inventory-plugin</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hqf.tutorials.java.plugin</groupId>
+                <artifactId>warehouse-plugin</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>

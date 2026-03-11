@@ -1,48 +1,28 @@
 package org.hqf.tutorials.java;
 
-import org.hqf.tutorials.core.PluginManager;
-import org.hqf.tutorials.core.PluginResourceManager;
-import org.hqf.tutorials.java.plugin.LoggingPlugin;
-import org.hqf.tutorials.java.plugin.ResourceIntensiveProcessingPlugin;
+import org.hqf.tutorials.api.business.BusinessFlowContext;
+import org.hqf.tutorials.core.BusinessFlowEngine;
+
+import java.util.List;
+import java.util.Map;
 
 public class Main {
+
     public static void main(String[] args) {
+        BusinessFlowEngine engine = new BusinessFlowEngine();
+        engine.loadModulesBySpi();
 
-        loadPluginsBySpi();
+        BusinessFlowContext context = new BusinessFlowContext();
+        List<String> executionTrace = engine.executeFlow(context);
 
-//        manualLoadPlugins();
-
-        System.out.println("PluginManagerDemo: Stopping plugins and exiting...");
-    }
-
-    private static void loadPluginsBySpi() {
-        PluginManager pluginManager = new PluginManager();
-        pluginManager.loadPlugins();
-        pluginManager.startPlugins();
-
-    }
-
-    private static void manualLoadPlugins() {
-        // Create an instance of the PluginResourceManager
-        PluginResourceManager pluginResourceManager = new PluginResourceManager();
-
-        // Create instances of your plugins
-        LoggingPlugin loggingPlugin = new LoggingPlugin();
-        ResourceIntensiveProcessingPlugin resourceIntensiveProcessingPlugin = new ResourceIntensiveProcessingPlugin();
-
-        // Register the plugins with the PluginResourceManager
-        pluginResourceManager.registerPlugin("logging-plugin", loggingPlugin);
-        pluginResourceManager.registerPlugin("resource-intensive-plugin", resourceIntensiveProcessingPlugin);
-
-        // Let the plugins run for 10 seconds
-        try {
-            Thread.sleep(10000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        System.out.println("===== Rule Execution Trace =====");
+        for (String step : executionTrace) {
+            System.out.println(step);
         }
 
-        // Unregister the plugins (optional)
-        // pluginResourceManager.unregisterPlugin("logging-plugin");
-        // pluginResourceManager.unregisterPlugin("resource-intensive-plugin");
+        System.out.println("===== Business Context =====");
+        for (Map.Entry<String, Object> entry : context.asMap().entrySet()) {
+            System.out.println(entry.getKey() + " = " + entry.getValue());
+        }
     }
 }

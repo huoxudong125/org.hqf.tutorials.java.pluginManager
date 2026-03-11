@@ -11,9 +11,11 @@
 
 - `plugin-api`：插件接口定义（`Plugin`）
 - `plugin-core`：插件加载、线程隔离、资源监控
-- `plugins/logging-plugin`：日志插件示例
-- `plugins/resource-intensive-plugin`：资源密集型插件示例
-- `plugin-demo`：Demo 启动入口
+- `plugins/sales-plugin`：销售模块，创建订单并发布订单结果
+- `plugins/inventory-plugin`：库存模块，执行库存占用与短缺判断
+- `plugins/warehouse-plugin`：仓储模块，库存足够时创建拣货任务
+- `plugins/procurement-plugin`：采购模块，库存不足时自动发起请购
+- `plugin-demo`：Demo 启动入口（串联业务流引擎）
 
 ## 快速开始
 
@@ -47,3 +49,14 @@ mvn clean package
 - [Wiki Home](wiki/Home.md)
 - [Architecture](wiki/Architecture.md)
 - [Development Guide](wiki/Development.md)
+
+## 业务流引擎
+
+`plugin-core` 新增 `BusinessFlowEngine`，支持：
+
+- 业务模块通过 SPI 注册 `BusinessModulePlugin`
+- 每个模块声明多个 `BusinessRule`
+- 通过 `order` + `runAfterRuleIds()` 同时控制规则优先级和依赖顺序
+- 多模块共享 `BusinessFlowContext` 完成协同执行
+
+默认示例流程：销售下单 -> 库存占用 ->（库存不足则触发采购请购）-> 仓库创建拣货任务 -> 销售输出结果。
